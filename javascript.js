@@ -15,9 +15,14 @@ let books = JSON.parse(localStorage.getItem('lib_books')) || defaultBooks;
 let stack = JSON.parse(localStorage.getItem('lib_stack')) || [];
 let history = JSON.parse(localStorage.getItem('lib_history')) || [];
 let reviews = JSON.parse(localStorage.getItem('lib_reviews')) || {};
-let usersDB = JSON.parse(localStorage.getItem('lib_users')) || { "Bro": "bro" };
+let usersDB = JSON.parse(localStorage.getItem('lib_users')) || { "Admin": "password" };
 let currentUser = localStorage.getItem('lib_user') || null;
 let likedGenres = JSON.parse(localStorage.getItem('lib_liked_genres')) || [];
+
+// Auth guard
+if (!currentUser && !window.location.pathname.endsWith('index.html') && !window.location.pathname.endsWith('/')) {
+    window.location.href = 'index.html';
+}
 
 books.forEach(b => {
     if (b.status === 'Pending Return') {
@@ -50,7 +55,7 @@ function toast(msg) {
     setTimeout(() => el.remove(), 3000);
 }
 
-// Background Music Loop Handler (jazz.mp3)
+// Audio loop
 function playBackgroundMusic() {
     const music = document.getElementById('bg-music');
     if (!music) return;
@@ -97,7 +102,7 @@ function checkAuth() {
     }
 }
 
-// Unified Smart Login & Auto-Register Logic
+// Login logic
 function handleLoginOrRegister() {
     const name = document.getElementById('login-username').value.trim();
     const password = document.getElementById('login-password').value.trim();
@@ -109,21 +114,6 @@ function handleLoginOrRegister() {
 
     playBackgroundMusic();
 
-    // Specific check for master user "Bro"
-    if (name === "Bro") {
-        if (password === "bro") {
-            currentUser = name;
-            localStorage.setItem('lib_user', currentUser);
-            checkAuth();
-            toast(`Welcome back, ${currentUser}!`);
-            setTimeout(() => location.reload(), 800);
-        } else {
-            toast('Incorrect password for Bro! Please try again.');
-        }
-        return;
-    }
-
-    // If account exists, log them in straight away
     if (usersDB[name]) {
         if (usersDB[name] === password) {
             currentUser = name;
@@ -135,7 +125,6 @@ function handleLoginOrRegister() {
             toast('Incorrect password! Please try again.');
         }
     } else {
-        // If account does not exist, automatically create it right here!
         usersDB[name] = password;
         saveData();
         currentUser = name;
@@ -148,7 +137,7 @@ function handleLoginOrRegister() {
 
 function logoutSystem() {
     localStorage.removeItem('lib_user');
-    location.reload();
+    window.location.href = 'index.html';
 }
 
 function getRemainingDeadline(dueDateStr) {
