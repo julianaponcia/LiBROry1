@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LiBROry — Home</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <!-- Background Music (Loop Enabled) -->
+    <audio id="bg-music" src="audio/jazz.mp3" loop preload="auto"></audio>
+
+    <div class="aurora">
+        <div class="band band-1"></div>
+        <div class="band band-2"></div>
+        <div class="band band-3"></div>
+    </div>
+
+    <div id="splash-screen">
+        <img src="images/load.png" alt="Loading...">
+        <h1>LiBROry</h1>
+    </div>
+
+    <div id="toast-box"></div>
+    <div id="login-modal" style="display:none;">
+        <div class="login-card">
+            <h2>Welcome to LiBROry</h2>
+            <p class="tagline-text">Please input your name and password to access</p>
+            <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
+                <div class="form-group" style="margin-bottom: 0; text-align: left;">
+                    <input type="text" id="login-username" class="form-input" placeholder="Your Name..." required>
+                </div>
+                <div class="form-group" style="margin-bottom: 0; text-align: left;">
+                    <input type="password" id="login-password" class="form-input" placeholder="Password..." required>
+                </div>
+                <button type="button" class="action-btn" onclick="handleLoginOrRegister()">Enter System</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-window">
+        <aside class="outer-sidebar">
+            <div class="orange-capsule">
+                <div>
+                    <div class="brand-header">
+                        <span>📚</span>
+                        <span>LiBROry</span>
+                    </div>
+                    <div id="current-user-display" style="background:var(--white); color:var(--navy-dark); padding:8px 12px; border-radius:20px; font-weight:800; font-size:12px; text-align:center; margin-bottom:15px; box-shadow:0 2px 5px rgba(0,0,0,0.1);"></div>
+
+                    <!-- Corrected Sequence -->
+                    <nav class="nav-menu">
+                        <a href="index.html" class="nav-item active"><i class="fa-solid fa-store"></i>Home</a>
+                        <a href="borrow.html" class="nav-item"><i class="fa-solid fa-book-tanakh"></i>Borrow a book</a>
+                        <a href="return.html" class="nav-item"><i class="fa-solid fa-book"></i>Return a book</a>
+                        <a href="review.html" class="nav-item"><i class="fa-solid fa-face-grin-stars"></i>Review a book</a>
+                        <a href="returned.html" class="nav-item"><i class="fa-solid fa-file-import"></i>Returned books</a>
+                        <a href="process.html" class="nav-item"><i class="fa-solid fa-exchange-alt"></i>Process returns</a>
+                        <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-chart-simple"></i>Dashboard</a>
+                    </nav>
+                </div>
+                <button class="logout-btn" onclick="logoutSystem()"><i class="fa-solid fa-door-open"></i>Log out</button>
+            </div>
+        </aside>
+
+        <main class="main-viewport">
+            <div class="top-bar" style="flex-direction: column; align-items: flex-start; gap: 15px; margin-bottom: 20px;">
+                <h1 class="title" id="word">
+                    <span class="ch">W</span><span class="ch">e</span><span class="ch">l</span><span class="ch">c</span><span class="ch">o</span><span class="ch">m</span><span class="ch">e</span>
+                    <span class="ch">&nbsp;</span>
+                    <span class="ch">t</span><span class="ch">o</span>
+                    <span class="ch">&nbsp;</span>
+                    <span class="ch" style="color:var(--orange-bright);">L</span><span class="ch" style="color:var(--orange-bright);">i</span><span class="ch" style="color:var(--orange-bright);">B</span><span class="ch" style="color:var(--orange-bright);">R</span><span class="ch" style="color:var(--orange-bright);">O</span><span class="ch" style="color:var(--orange-bright);">r</span><span class="ch" style="color:var(--orange-bright);">y</span><span class="ch" style="color:var(--orange-bright);">!</span>
+                </h1>
+                
+                <div style="display: flex; width: 100%; align-items: center; justify-content: space-between;">
+                    <p class="tagline-text" style="color: #475569; margin: 0;">Your brother for book borrowing and returns.</p>
+                    <div class="search-capsule" style="display: flex; align-items: center; background: rgba(255, 255, 255, 0.85); border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 30px; padding: 4px 4px 4px 18px; width: 280px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                        <input type="text" id="home-search-input" placeholder="Search catalog..." style="border: none; background: transparent; outline: none; width: 100%; font-size: 14px; color: #0f1c30;" onkeypress="if(event.key==='Enter') executeSearch()">
+                        <button class="action-btn" onclick="executeSearch()" style="background: var(--orange-bright); color: white; border: none; padding: 8px 18px; border-radius: 25px; font-weight: 700; cursor: pointer;">Search</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="spotlight-wrapper" style="display: flex; align-items: center; gap: 16px; margin-bottom: 30px;">
+                <button class="carousel-arrow" onclick="prevSpotlight()" style="width: 36px; height: 36px; border-radius: 50%; background: var(--orange-bright); color: white; border: none; cursor: pointer; font-weight: bold;">◄</button>
+
+                <div class="spotlight-card" style="flex-grow: 1; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.8); border-radius: 24px; padding: 30px 40px; display: flex; gap: 30px; align-items: center; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.06);">
+                    <img id="spotlight-img" src="" alt="Book Cover" style="width: 150px; height: 220px; object-fit: cover; border-radius: 6px; box-shadow: 0 10px 20px rgba(0,0,0,0.15);">
+                    <div class="spotlight-details" style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1; box-shadow: 0 4px 12px rgba(0,0,0,0.04); padding: 20px; border-radius: 16px; background: rgba(255, 255, 255, 0.95);">
+                        <div>
+                            <span id="spotlight-title" style="font-size: 24px; font-weight: 800; color: var(--navy-dark);"></span>
+                            <span id="spotlight-author" style="font-style: italic; color: var(--text-muted); font-size: 16px;"></span>
+                        </div>
+                        <p id="spotlight-desc" style="font-size: 13px; line-height: 1.5; color: var(--text-muted); max-width: 480px;"></p>
+                        
+                        <div style="margin-top: 8px;">
+                            <div style="font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted);">Recent Review</div>
+                            <div>
+                                <span id="spotlight-stars" style="color: #f59e0b; font-size: 14px;">☆☆☆☆☆</span>
+                                <span id="spotlight-review-text" style="font-size: 12px; color: var(--text-muted); font-weight: 600;">There are no current reviews</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="carousel-arrow" onclick="nextSpotlight()" style="width: 36px; height: 36px; border-radius: 50%; background: var(--orange-bright); color: white; border: none; cursor: pointer; font-weight: bold;">►</button>
+            </div>
+
+            <div style="height: 1px; background: rgba(0, 0, 0, 0.1); margin: 25px 0;"></div>
+
+            <h2 style="font-size: 20px; font-weight: 800; color: var(--navy-dark); margin-bottom: 15px;">BROwse the STACK</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px;">
+                <div onclick="filterCategory('All')" class="category-aurora-card" style="cursor: pointer;">
+                    <div class="mini-aurora-bg"></div>
+                    <div class="stacks-content"> All </div>
+                </div>
+                <div onclick="filterCategory('Mystery')" class="category-aurora-card" style="cursor: pointer;">
+                    <div class="mini-aurora-bg"></div>
+                    <div class="stacks-content"> Mystery </div>
+                </div>
+                <div onclick="filterCategory('Romance')" class="category-aurora-card" style="cursor: pointer;">
+                    <div class="mini-aurora-bg"></div>
+                    <div class="stacks-content"> Romance </div>
+                </div>
+                <div onclick="filterCategory('Drama')" class="category-aurora-card" style="cursor: pointer;">
+                    <div class="mini-aurora-bg"></div>
+                    <div class="stacks-content"> Drama </div>
+                </div>
+                <div onclick="filterCategory('Sci-Fi')" class="category-aurora-card" style="cursor: pointer;">
+                    <div class="mini-aurora-bg"></div>
+                    <div class="stacks-content"> Sci-Fi </div>
+                </div>
+                <div onclick="filterCategory('Classic')" class="category-aurora-card" style="cursor: pointer;">
+                    <div class="mini-aurora-bg"></div>
+                    <div class="stacks-content"> Classic </div>
+                </div>
+            </div>
+
+            <!-- Project Info & FAQ Section -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding-top: 25px; border-top: 1px solid rgba(0, 0, 0, 0.1); margin-bottom: 40px;">
+                <div style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.8); padding: 30px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04);">
+                    <h3 style="font-size: 20px; font-weight: 800; color: var(--navy-dark); margin-bottom: 15px;">Project LiBROry</h3>
+                    <p style="font-size: 13px; font-weight: 700; color: var(--orange-bright); margin-bottom: 10px;">Made by:</p>
+                    <ul style="list-style-type: none; font-size: 13px; color: var(--text-muted); line-height: 1.8; margin-bottom: 20px;">
+                        <li>✓ Oropesa, Juliana Poncia B. *</li>
+                        <li>✓ Carlos, Christian Louie A.</li>
+                        <li>✓ Dangculos, Chale Jeremy M.</li>
+                    </ul>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+                        <span style="background: #f1f5f9; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; color: var(--navy-dark);">Since 2026</span>
+                        <span style="background: #f1f5f9; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; color: var(--navy-dark);">Data Science 2A</span>
+                        <span style="background: #10b981; color: white; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 700;">CASE STUDY</span>
+                    </div>
+                </div>
+
+                <div style="background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.8); padding: 30px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.04);">
+                    <h3 style="font-size: 20px; font-weight: 800; color: var(--navy-dark); margin-bottom: 15px;">Frequently Asked Questions</h3>
+                    <p style="font-size: 13px; font-weight: 700; color: var(--orange-bright); margin-bottom: 4px;">How does book borrowing work?</p>
+                    <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px;">Navigate to the "Borrow a book" tab, select an available title, and log your borrowing schedule instantly.</p>
+                    
+                    <p style="font-size: 13px; font-weight: 700; color: var(--orange-bright); margin-bottom: 4px;">Is LiBROry fully safe and free to use?</p>
+                    <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px;">Yes! The system utilizes local storage to securely track user accounts, active inventories, and history.</p>
+                    
+                    <p style="font-size: 13px; font-weight: 700; color: var(--orange-bright); margin-bottom: 4px;">How do I submit book reviews?</p>
+                    <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5;">Head over to the "Review a book" tab to rate titles and share feedback with other readers.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="javascript.js"></script>
+    <script>
+        let spotlightIndex = 0;
+        function renderSpotlight() {
+            const current = books[spotlightIndex];
+            document.getElementById('spotlight-title').innerText = current.title + ' — ';
+            document.getElementById('spotlight-author').innerText = current.author;
+            document.getElementById('spotlight-desc').innerText = current.desc;
+            document.getElementById('spotlight-img').src = current.cover;
+
+            const bookReviews = reviews[current.id] || [];
+            const reviewTextEl = document.getElementById('spotlight-review-text');
+            const starsEl = document.getElementById('spotlight-stars');
+
+            if (bookReviews.length > 0) {
+                const latest = bookReviews[bookReviews.length - 1];
+                starsEl.innerText = '★'.repeat(latest.rating) + '☆'.repeat(5 - latest.rating);
+                reviewTextEl.innerText = `"${latest.comment}" (${latest.rating}/5 by ${latest.user})`;
+            } else {
+                starsEl.innerText = "☆☆☆☆☆";
+                reviewTextEl.innerText = "There are no current reviews";
+            }
+        }
+
+        function nextSpotlight() {
+            spotlightIndex = (spotlightIndex + 1) % books.length;
+            renderSpotlight();
+        }
+
+        function prevSpotlight() {
+            spotlightIndex = (spotlightIndex - 1 + books.length) % books.length;
+            renderSpotlight();
+        }
+
+        function executeSearch() {
+            const query = document.getElementById('home-search-input').value.toLowerCase();
+            const foundIdx = books.findIndex(b => b.title.toLowerCase().includes(query) || b.author.toLowerCase().includes(query));
+            if (foundIdx !== -1) {
+                spotlightIndex = foundIdx;
+                renderSpotlight();
+                toast(`Found "${books[foundIdx].title}"!`);
+            } else {
+                toast('Book not found');
+            }
+        }
+
+        function filterCategory(cat) {
+            localStorage.setItem('lib_filter', cat);
+            window.location.href = 'returned.html';
+        }
+
+        renderSpotlight();
+    </script>
+</body>
+</html>
